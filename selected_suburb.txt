@@ -1,0 +1,28 @@
+Spider Charts:
+Camberwell
+Williamstown
+Melbourne
+Ringwood
+Brighton
+Bentleigh East
+St Kilda
+Glen Waverley
+Brunswick
+Sunshine
+
+
+Red dots:
+Glen Iris 
+Hawthorn
+Hawthorn East
+Balwyn 
+Balwyn North
+Canterbury
+Burwood
+Ashburton
+Kew
+Kew East
+
+Camberwell:
+ - Good public school
+ - Close to shopping center

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>real Estate</title>
+
+    <script src="//maps.google.com/maps/api/js?key=AIzaSyCYCfaamPFUo6ePLlnUf68vgOuFcXeyiwo"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="js/loadMap.js"></script>
+    <script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYCfaamPFUo6ePLlnUf68vgOuFcXeyiwo&libraries=drawing">
+    </script>
+
+
+<script type="text/javascript" src="js/bootstrap-3.3.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+
+<script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css"/>
+<script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
+  <link rel="stylesheet" href="css/mystyle.css" type="text/css"/>  
+  <script type="text/javascript" src="heatmap/heatmap.js"></script>
+
+</head>
+<body onload="initMap();">
+
+    <div id ="selectBox">
+      <div class="slidecontainer">
+        <p></p>
+      <p><span id="kItem"></span></p>
+    <input type="range" min="10" max="100" value="20" class="slider" id="myRange">
+    
+      </div><br>
+      <div class="slidecontainer">
+        <p><span id="Distance" style="margin-left: 50px;"></span></p>
+    <input type="range" min="1" max="10" value="5" class="slider" id="distRange">
+      </div><br>
+    
+    <div id="select_view">
+    <ul>
+        <li><a> <b>Basic information</b>: </a></li>
+            <select id="select_basic" multiple="multiple" >
+            <option id="b1" name="basic" value="1" > Property Type</option>
+            <option id="b2" name="basic" value="2" selected> Price</option>
+            <option id="b3" name="basic" value="3" > Bedroom</option>
+            <option id="b4" name="basic" value="4" > Bathroom</option>
+            <option id="b5" name="basic" value="5" > Parking</option>
+            </select>
+        
+        <li><a><b>Neighbourhood</b>: </a></li>
+                <select id="select_neighbourhood"  multiple="mulitiple">
+                <option id="n1" name="neighbourhood" value="1"> Median age</option>
+                <option id="n2" name="neighbourhood" value="2" selected> Median income</option>
+                <option id="n3" name="neighbourhood" value="3"> Local(%)</option>
+               <option id="n4" name="neighbourhood" value="4"> English speaking(%)</option>
+               <option id="n5" name="neighbourhood" value="5"> Median rent</option>
+       </select>
+        <li><a><b>Schools</b>:</a></li>
+            <select id="select_school"  multiple="multiple">
+            <option id="s1" name="school" value="1" selected> Secondary school</option>
+            </select>
+        <li><a> <b>Travel to work</b>:</a></li>
+            <select id="select_travel" multiple="multiple">
+            <option name="travel" id="t1" value="1" > Walking time to station</option>
+            <option name="travel" id="t2" value="2" selected> Time of train to CBD </option>
+             <option name="travel" id="t3" value="3" > Total time to CBD </option>
+         </select>
+        <li><a><b>Facilities nearby</b>:</a></li>
+          <select id="select_facility" multiple="multiple">
+          <option name="facility" id="f1" value="1" > Supermarket</option>
+          <option name="facility" id="f2" value="2" > Hospital </option>
+          <option name="facility" id="f3" value="3" selected > Shopping center </option>
+          <option name="facility" id="f4" value="4" > Clinic </option>
+          </select>
+      
+                 
+        <li><a> <b>Land for Houses</b>:</a></li>
+          <select id="select_land"  multiple="multiple">
+          <option name="land" id="l1" value="1" selected> Land Size</option>
+          </select><br>
+
+        
+     </ul>
+   
+  </div>
+  <div id="spider_chart">
+  </div>
+  
+  
+</div>
+       
+    
+
+    <div id="map">
+    </div>
+
+    <div class="representList" style="width: 0px;">
+      <div>
+      <button id="deleteButton" onclick="hiddenSimList()">X</button>
+     </div>
+     <div id="pic"><img src="pic_new.png"></div>
+     <div id="heatmap_div">
+    </div>
+      
+    </div>
+  <script>
+        var zoomLevel = 16;
+        map = new google.maps.Map(document.getElementById('map'), 
+        {
+            zoom : zoomLevel,
+            center: {lat : -37.815, lng : 144.9629285},
+            style : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            mapTypeId: google.maps.MapTypeId.RoadMap,
+            scaleControl : true,
+            styles: 
+            [
+    {
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "saturation": -45
+      },
+      {
+        "lightness": 45
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.neighborhood",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  }
+]
+        });
+
+        function showSimList(){
+          
+  $('.representList').css({'width':'360px','height':'100%'});
+  $('#map').css({'width':'60%'});
+  //$('#deleteButton').css({'display':'block'});
+  /*(var x = document.getElementById("deleteButton");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }*/
+
+
+}
+
+var slider1 = document.getElementById("distRange");
+  var output1 = document.getElementById("Distance");
+  output1.innerHTML = "Distance:"+slider1.value;
+
+slider1.oninput = function() {
+  output1.innerHTML = "Distance:"+this.value;
+}
+
+var names_text = ["Price","Median income","Secondary school","Train Time to CBD","Shopping center","Land size"];
+document.getElementById("spider_chart").innerHTML = "";
+    var div_height = document.getElementById("spider_chart").clientHeight;
+    var div_width = document.getElementById("spider_chart").clientWidth;
+
+    var margin = {top: 5, right: 5, bottom: 0, left: 0};
+    var width = div_width - margin.left - margin.right;
+    var height = div_height - margin.top - margin.bottom;
+
+    var canvas_spider = d3.select("#spider_chart")
+        .append("svg")
+        .attr("width", div_width)
+        .attr("height", div_width).append("g");
+    var lines = [];
+    var texts = [];
+  //var polygons = [];
+  var values_with_hilight = [];
+
+    var size_of_edge = Math.min(width, height) / 2 - 10;
+    var center_x = width / 2 + margin.left;
+    var center_y = height / 2 + margin.top;
+
+      /*Drawing Axes*/
+    for (var i = 0; i < 6; i++) {
+        var x_end = Math.cos(i * 2 * Math.PI / 6) * size_of_edge;
+        var y_end = Math.sin(i * 2 * Math.PI / 6) * size_of_edge;
+        lines[i] = canvas_spider.append("line")
+            .attr("x1", center_x)
+            .attr("y1", center_y)
+            .attr("x2", center_x + x_end)
+            .attr("y2", center_y + y_end)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1);
+      
+      var text_x = center_x + x_end*1.1;
+      var text_y = center_y + y_end*1.1;
+      
+      if(x_end<0){
+        text_x -= 30;
+        if(y_end < 0){
+          text_y-=8;
+          text_x -= 8;
+        }else if(y_end > 0){
+          text_y+=8;
+          text_x -= 8;
+        }else if(y_end == 0){
+          text_x -= 25;
+          text_y += 10;
+        }
+      }
+      
+      /****
+      ***** Adding text
+      **********/
+            texts[i]=canvas_spider.append("text")
+             .attr("x", text_x)
+             .attr("y", text_y)
+             .attr("font-size", 12)
+             .text(names_text[i])
+             .attr("dy", ".20em");
+    }
+    
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#select_school').multiselect({buttonWidth: '150px',
+});
+        $('#select_travel').multiselect({buttonWidth: '150px',
+});
+        $('#select_facility').multiselect({buttonWidth: '150px',
+});
+        $('#select_land').multiselect({buttonWidth: '150px',
+});
+        $('#select_basic').multiselect({buttonWidth: '150px',
+});
+        $('#select_neighbourhood').multiselect({buttonWidth: '150px',
+});
+    });
+</script>
+</body>
+
+</html>

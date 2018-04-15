@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>real Estate</title>
+    <style>
+        html, body {
+            width : 100%;
+            height : 100%;
+            margin : 0;
+            padding : 0;
+        }
+
+        #map{
+            height: 100%;
+            width: 80%;
+            margin : 0;
+            padding : 0;
+            margin-left: 200px;
+            float:left;
+
+        }
+        
+       #selectBox{
+            z-index: 10;
+            width: 200px;
+            height: 100%;
+            position: fixed;
+            float:left;
+            top: 100px;       
+            left: 0;        
+           
+        }
+
+        ul{
+            list-style-type: none;
+            left-margin :0;
+            left-padding:0;
+            background: #f8f8f8;
+        }
+
+        ul a{
+            display: block;
+            width:100px;
+            height:40px;
+            line-height: 40px;
+            background: #f8f8f8;
+        }
+
+        select{
+            width: 100px;
+            height: 20px;
+        }
+
+        button{
+            margin-left: 50px;
+            width: 100px;
+            height: 20px;
+            
+        }
+
+        .property, .property svg{
+            position: absolute;
+        }
+
+        .property svg {
+            width: 100px;
+            height: 100px;
+            padding-right: 100px;
+            font: 10px sans-serif;
+        }
+
+        .tooltip_map{
+            width: auto;
+            height: auto;
+            text-align: left;
+            visibility: hidden;
+            position: absolute;
+            border: 1px solid grey;
+            padding: 5px;
+            font: 15px sans-serif;
+            background: white;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+    </style>
+    <script src="//maps.google.com/maps/api/js?key=AIzaSyCYCfaamPFUo6ePLlnUf68vgOuFcXeyiwo&sensor=true"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript" src="js/mapData.js"></script>
+</head>
+<body>
+   
+    <div id ="selectBox">
+        <ul>
+        <li><a>Property Type</a>
+            <select id ="Property type">
+                <option value = "all"> </option>
+                <option value = "House">House</option>
+                <option value = "Unit">Unit</option>
+                <option value = "Apartment">Apartment</option>
+            </select>
+        </li>
+        <li><a>Bedrooms(Min)</a></li>
+            <select id ="Bedrooms Num">
+                <option value = "all"> </option>
+                <option value = "1">1</option>
+                <option value = "2">2</option>
+                <option value = "3">3</option>
+                <option value = "4">4</option>
+            </select>
+        <li><a>Price(Max /k)</a></li>
+            <select id ="Price(Max /k AUD)">
+                <option value = "all"> </option>
+                <option value = "600k">600</option>
+                <option value = ">600k">1200</option>
+            </select>
+        </ul>
+        <button type="button" onclick="selectAttribute()">Apply</button>
+        <button type="button" onclick="ShowAll()">Show All</button>
+    </div>
+
+    <div id="map">
+    </div>
+    <script>
+        var zoomLevel = 15;
+        map = new google.maps.Map(document.getElementById('map'), 
+        {
+            zoom : zoomLevel,
+            center: {lat : -37.815, lng : 144.9629285},
+            style : google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            mapTypeId: google.maps.MapTypeId.RoadMap,
+            scaleControl : true,
+            styles: 
+            [
+  {
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "saturation": -45
+      },
+      {
+        "lightness": 45
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.neighborhood",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  }
+]
+        });
+    
+    </script>
+</body>
+</html>
